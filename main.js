@@ -1,7 +1,25 @@
 
 const generateBtn = document.getElementById('generate-btn');
 const lottoNumbersDiv = document.getElementById('lotto-numbers');
+const themeBtn = document.getElementById('theme-btn');
 
+// Theme Logic
+const currentTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', currentTheme);
+updateThemeButton(currentTheme);
+
+themeBtn.addEventListener('click', () => {
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    updateThemeButton(theme);
+});
+
+function updateThemeButton(theme) {
+    themeBtn.textContent = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+}
+
+// Lotto Logic
 generateBtn.addEventListener('click', () => {
     const numbers = generateLottoNumbers();
     displayNumbers(numbers);
@@ -27,9 +45,9 @@ function displayNumbers(numbers) {
 }
 
 function getNumberColor(number) {
-    if (number <= 10) return '#fbc400';
-    if (number <= 20) return '#69c8f2';
-    if (number <= 30) return '#ff7272';
-    if (number <= 40) return '#aaa';
-    return '#b0d840';
+    if (number <= 10) return '#fbc400'; // Yellow
+    if (number <= 20) return '#69c8f2'; // Blue
+    if (number <= 30) return '#ff7272'; // Red
+    if (number <= 40) return '#aaa';    // Grey
+    return '#b0d840';                   // Green
 }
