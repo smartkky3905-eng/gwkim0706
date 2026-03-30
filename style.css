@@ -1,159 +1,201 @@
 
 :root {
-    --bg-color: #fff9f0;
+    --bg-color: #f8f9fa;
     --container-bg: #ffffff;
-    --text-color: #5a4b41;
-    --accent-color: #ff9a9e;
-    --secondary-color: #fad0c4;
-    --card-shadow: 0 10px 25px rgba(255, 154, 158, 0.15);
+    --text-color: #495057;
+    --mint: #b2f2bb;
+    --lavender: #e5dbff;
+    --yellow: #fff3bf;
+    --pink: #ffdeeb;
+    --accent: #748ffc;
     --font-main: 'Nanum Gothic', sans-serif;
     --font-heading: 'Gaegu', cursive;
+    --jelly-shadow: 0 8px 0px rgba(0, 0, 0, 0.05);
 }
 
 [data-theme="dark"] {
-    --bg-color: #2d2424;
-    --container-bg: #3d3434;
-    --text-color: #f2e9e9;
-    --accent-color: #ff8085;
-    --secondary-color: #ff9a9e;
-    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    --bg-color: #212529;
+    --container-bg: #343a40;
+    --text-color: #f8f9fa;
+    --mint: #2b8a3e;
+    --lavender: #5f3dc4;
+    --yellow: #e67700;
+    --pink: #a61e4d;
+    --accent: #4c6ef5;
+    --jelly-shadow: 0 8px 0px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes float {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(2deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes jelly {
+    0% { transform: scale(1, 1); }
+    30% { transform: scale(1.25, 0.75); }
+    40% { transform: scale(0.75, 1.25); }
+    50% { transform: scale(1.15, 0.85); }
+    65% { transform: scale(0.95, 1.05); }
+    75% { transform: scale(1.05, 0.95); }
+    100% { transform: scale(1, 1); }
 }
 
 body {
     font-family: var(--font-main);
     background-color: var(--bg-color);
+    background-image: radial-gradient(var(--mint) 1px, transparent 1px), 
+                      radial-gradient(var(--lavender) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
     color: var(--text-color);
     margin: 0;
     padding: 20px;
-    line-height: 1.6;
-    transition: all 0.3s ease;
     display: flex;
     justify-content: center;
     min-height: 100vh;
+    transition: all 0.3s ease;
 }
 
 .container {
     width: 100%;
-    max-width: 600px;
+    max-width: 500px;
+    animation: float 6s ease-in-out infinite;
 }
 
 header {
     text-align: center;
-    padding: 40px 0;
+    padding: 30px 0;
     position: relative;
 }
 
 h1 {
     font-family: var(--font-heading);
-    font-size: 3rem;
+    font-size: 3.5rem;
     margin: 0;
-    color: var(--accent-color);
+    color: var(--accent);
+    text-shadow: 3px 3px 0px var(--lavender);
 }
 
 .theme-toggle {
     position: absolute;
-    top: 10px;
+    top: 0;
     right: 0;
 }
 
 #theme-btn {
-    background: var(--container-bg);
-    border: 2px solid var(--accent-color);
-    color: var(--text-color);
-    padding: 8px 15px;
-    border-radius: 25px;
+    background: var(--yellow);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
     cursor: pointer;
-    font-size: 0.9rem;
     font-weight: bold;
-    transition: all 0.3s ease;
+    box-shadow: var(--jelly-shadow);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 #theme-btn:hover {
-    background: var(--accent-color);
-    color: white;
+    transform: scale(1.1);
+    background: var(--mint);
+}
+
+#theme-btn:active {
+    transform: scale(0.9);
 }
 
 .profile-card {
     background: var(--container-bg);
-    border-radius: 30px;
-    padding: 40px;
+    border: 4px solid var(--lavender);
+    border-radius: 40px;
+    padding: 30px;
     text-align: center;
-    box-shadow: var(--card-shadow);
-    margin-bottom: 30px;
+    box-shadow: 10px 10px 0px var(--lavender);
+    margin-bottom: 40px;
 }
 
 .profile-img {
-    width: 120px;
-    height: 120px;
-    background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+    width: 140px;
+    height: 140px;
+    background: var(--pink);
+    border: 4px solid var(--mint);
     border-radius: 50%;
     margin: 0 auto 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3rem;
-    box-shadow: 0 5px 15px rgba(255, 154, 158, 0.3);
+    font-size: 4rem;
+    animation: jelly 4s infinite;
 }
 
 h2 {
     font-family: var(--font-heading);
-    font-size: 2rem;
-    margin-top: 0;
+    font-size: 2.2rem;
+    margin: 10px 0;
+    color: var(--text-color);
 }
 
 .info-list {
     list-style: none;
     padding: 0;
-    margin: 20px 0 0;
-    text-align: left;
-    display: inline-block;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 .info-list li {
-    font-size: 1.1rem;
-    margin-bottom: 12px;
+    background: var(--bg-color);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    border: 2px solid var(--mint);
 }
 
 .hobby-section {
     background: var(--container-bg);
-    border-radius: 30px;
-    padding: 40px;
+    border: 4px solid var(--mint);
+    border-radius: 40px;
+    padding: 30px;
     text-align: center;
-    box-shadow: var(--card-shadow);
-    border-left: 8px solid var(--accent-color);
+    box-shadow: 10px 10px 0px var(--mint);
+    position: relative;
+    overflow: hidden;
+}
+
+.hobby-section::before {
+    content: "✏️";
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 3rem;
+    opacity: 0.2;
+    transform: rotate(20deg);
 }
 
 h3 {
     font-family: var(--font-heading);
-    font-size: 1.8rem;
-    margin-top: 0;
-    color: var(--accent-color);
+    font-size: 2rem;
+    color: var(--text-color);
 }
 
 .hobby-tag {
-    background: var(--accent-color);
-    color: white;
-    padding: 5px 20px;
-    border-radius: 20px;
+    background: var(--yellow);
+    color: #856404;
+    padding: 10px 25px;
+    border-radius: 30px;
     display: inline-block;
-    font-weight: bold;
+    font-weight: 800;
+    font-size: 1.2rem;
     margin-bottom: 15px;
-    font-size: 1rem;
-}
-
-.hobby-description {
-    font-size: 1.05rem;
+    border: 3px dashed var(--mint);
+    animation: float 4s ease-in-out infinite;
 }
 
 footer {
     text-align: center;
-    margin-top: 50px;
+    margin-top: 40px;
     padding: 20px;
-    font-size: 0.9rem;
-    opacity: 0.7;
-}
-
-@media (max-width: 480px) {
-    h1 { font-size: 2.2rem; }
-    .profile-card, .hobby-section { padding: 30px 20px; }
+    font-weight: bold;
+    color: var(--accent);
 }
