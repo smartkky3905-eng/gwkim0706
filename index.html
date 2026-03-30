@@ -1,20 +1,48 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lotto Number Generator</title>
-  <link href='/style.css' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>라희의 방 - 우리딸 라희를 소개합니다</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet">
 </head>
 <body>
-  <div class="lotto-container">
-    <div class="theme-toggle">
-      <button id="theme-btn">🌙 Dark Mode</button>
+    <div class="container">
+        <header>
+            <div class="theme-toggle">
+                <button id="theme-btn">🌙 다크 모드</button>
+            </div>
+            <h1>🎨 라희의 방</h1>
+        </header>
+        
+        <main>
+            <section class="profile-card">
+                <div class="profile-img">
+                    <span>✨</span>
+                </div>
+                <h2>안녕하세요! 저는 라희예요</h2>
+                <ul class="info-list">
+                    <li><strong>🏫 학교:</strong> 오마초등학교</li>
+                    <li><strong>🎒 학년:</strong> 4학년</li>
+                    <li><strong>📍 사는 곳:</strong> 고양시 일산</li>
+                </ul>
+            </section>
+
+            <section class="hobby-section">
+                <h3>내가 좋아하는 것 ✍️</h3>
+                <p>저는 그림 그리는 것을 정말 좋아해요!</p>
+                <div class="hobby-tag">#웹툰그리기</div>
+                <div class="hobby-description">
+                    특히 웹툰 그리기에 푹 빠져 있답니다. 나중에 멋진 웹툰 작가가 되고 싶어요.
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>© 2026 라희의 방. All rights reserved.</p>
+        </footer>
     </div>
-    <h1>Lotto Number Generator</h1>
-    <button id="generate-btn">Generate Numbers</button>
-    <div id="lotto-numbers"></div>
-  </div>
-  <script defer type="text/javascript" src="/main.js"></script>
+    <script defer src="/main.js"></script>
 </body>
 </html>

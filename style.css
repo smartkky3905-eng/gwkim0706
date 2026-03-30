@@ -1,115 +1,159 @@
 
 :root {
-    --bg-color: #f0f2f5;
+    --bg-color: #fff9f0;
     --container-bg: #ffffff;
-    --text-color: #333333;
-    --btn-bg: #007aff;
-    --btn-hover: #005ecb;
-    --shadow: rgba(0, 0, 0, 0.1);
+    --text-color: #5a4b41;
+    --accent-color: #ff9a9e;
+    --secondary-color: #fad0c4;
+    --card-shadow: 0 10px 25px rgba(255, 154, 158, 0.15);
+    --font-main: 'Nanum Gothic', sans-serif;
+    --font-heading: 'Gaegu', cursive;
 }
 
 [data-theme="dark"] {
-    --bg-color: #1a1a1a;
-    --container-bg: #2d2d2d;
-    --text-color: #f0f0f0;
-    --btn-bg: #0a84ff;
-    --btn-hover: #409fff;
-    --shadow: rgba(0, 0, 0, 0.5);
+    --bg-color: #2d2424;
+    --container-bg: #3d3434;
+    --text-color: #f2e9e9;
+    --accent-color: #ff8085;
+    --secondary-color: #ff9a9e;
+    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+    font-family: var(--font-main);
     background-color: var(--bg-color);
     color: var(--text-color);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
 }
 
-.lotto-container {
-    position: relative;
+.container {
+    width: 100%;
+    max-width: 600px;
+}
+
+header {
     text-align: center;
-    background-color: var(--container-bg);
-    padding: 40px;
-    border-radius: 24px;
-    box-shadow: 0 10px 30px var(--shadow);
-    width: 90%;
-    max-width: 420px;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    padding: 40px 0;
+    position: relative;
+}
+
+h1 {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    margin: 0;
+    color: var(--accent-color);
 }
 
 .theme-toggle {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 10px;
+    right: 0;
 }
 
 #theme-btn {
-    background: none;
-    border: 1px solid var(--text-color);
+    background: var(--container-bg);
+    border: 2px solid var(--accent-color);
     color: var(--text-color);
-    padding: 6px 12px;
-    border-radius: 20px;
+    padding: 8px 15px;
+    border-radius: 25px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 0.9rem;
+    font-weight: bold;
     transition: all 0.3s ease;
 }
 
 #theme-btn:hover {
-    background-color: var(--text-color);
-    color: var(--container-bg);
+    background: var(--accent-color);
+    color: white;
 }
 
-h1 {
+.profile-card {
+    background: var(--container-bg);
+    border-radius: 30px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: var(--card-shadow);
     margin-bottom: 30px;
-    font-size: 28px;
 }
 
-#generate-btn {
-    background-color: var(--btn-bg);
-    color: white;
-    border: none;
-    padding: 16px 32px;
-    font-size: 18px;
-    font-weight: 700;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
-    width: 100%;
-}
-
-#generate-btn:hover {
-    background-color: var(--btn-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
-}
-
-#generate-btn:active {
-    transform: translateY(0);
-}
-
-#lotto-numbers {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 40px;
-    flex-wrap: wrap;
-}
-
-.number-ball {
-    width: 52px;
-    height: 52px;
+.profile-img {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
     border-radius: 50%;
+    margin: 0 auto 20px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    font-size: 20px;
-    font-weight: 800;
+    justify-content: center;
+    font-size: 3rem;
+    box-shadow: 0 5px 15px rgba(255, 154, 158, 0.3);
+}
+
+h2 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    margin-top: 0;
+}
+
+.info-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0;
+    text-align: left;
+    display: inline-block;
+}
+
+.info-list li {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+}
+
+.hobby-section {
+    background: var(--container-bg);
+    border-radius: 30px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: var(--card-shadow);
+    border-left: 8px solid var(--accent-color);
+}
+
+h3 {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    margin-top: 0;
+    color: var(--accent-color);
+}
+
+.hobby-tag {
+    background: var(--accent-color);
     color: white;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    padding: 5px 20px;
+    border-radius: 20px;
+    display: inline-block;
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.hobby-description {
+    font-size: 1.05rem;
+}
+
+footer {
+    text-align: center;
+    margin-top: 50px;
+    padding: 20px;
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+@media (max-width: 480px) {
+    h1 { font-size: 2.2rem; }
+    .profile-card, .hobby-section { padding: 30px 20px; }
 }
