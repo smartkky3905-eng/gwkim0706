@@ -3,6 +3,9 @@
 // ------------------------------------------------------------------
 const lastUpdatedEl = document.getElementById('last-updated');
 
+// 온스(Ounce)를 톤(Metric Ton)으로 변환하는 상수
+const OUNCE_TO_TON = 32150.7466; 
+
 // ------------------------------------------------------------------
 // EXCHANGE RATE DATA (Frankfurter API)
 // ------------------------------------------------------------------
@@ -26,56 +29,43 @@ async function fetchExchangeRates() {
 }
 
 // ------------------------------------------------------------------
-// COMMODITY DATA (USD/ton 기준 추출 및 처리)
+// COMMODITY DATA (새로운 한글 API 구조 적용 + USD/ton 환산)
 // ------------------------------------------------------------------
 async function fetchCommodities() {
     try {
-        // 실제 API 연동 시 아래 주석을 해제하고 URL을 입력하세요.
-        // const response = await fetch('YOUR_API_ENDPOINT');
-        // const result = await response.json();
-
-        // [제공해주신 API 구조 샘플]
-        const result = { 
-            "data": { 
-                "success": true, 
-                "rates": { 
-                    "USD": 1,
-                    "LME-XCU": 0.0001186, // (예시) 1달러당 톤수
-                    "LME-LEAD": 0.0004750,
-                    "LME-ALU": 0.0004405,
-                    "IRON": 0.0088339,
-                    "USDLME-XCU": 8432.50, // (직접 가격) USD per Ton
-                    "USDLME-LEAD": 2105.00,
-                    "USDLME-ALU": 2270.50,
-                    "USDIRON": 113.20
-                } 
-            } 
+        // [제공해주신 새로운 API 구조 샘플]
+        const result = {
+            "기준": "USD",
+            "날짜": "2026-03-31",
+            "요금": {
+                "알루미늄": 0.1096,
+                "구리": 0.3467,
+                "납": 0.0655, // (가정치)
+                "철": 0.0035,  // (가정치)
+                "팔라디움": 1430.0000,
+                "플래티넘": 1910.0000,
+                "로듐": 10400.0000,
+                "아연": 0.0983
+            },
+            "단위": "금속은 온스당"
         };
 
-        const rates = result.data.rates;
+        const rates = result.요금;
 
-        // USD/ton 가격 추출 함수
-        // 직접 가격(USDXXX)이 있으면 사용하고, 없으면 역수(1/XXX)로 계산합니다.
-        const getPricePerTon = (symbol) => {
-            const directKey = 'USD' + symbol;
-            if (rates[directKey]) return rates[directKey]; // 직접 가격 사용
-            if (rates[symbol]) return 1 / rates[symbol];  // 역수 계산 (1 USD / 톤당 USD)
-            return null;
-        };
-
-        const commodities = [
-            { id: 'copper', symbol: 'LME-XCU', label: 'LME Copper Grade A' },
-            { id: 'lead', symbol: 'LME-LEAD', label: 'LME Lead Standard' },
-            { id: 'aluminum', symbol: 'LME-ALU', label: 'LME Aluminum HG' },
-            { id: 'iron', symbol: 'IRON', label: 'Iron Ore 62% Fe' }
-        ];
-
-        commodities.forEach(item => {
-            const price = getPricePerTon(item.symbol);
-            if (price) {
-                updateCard(item.id, '$' + price.toLocaleString(undefined, {maximumFractionDigits: 2}), item.label);
+        // 금속별 USD/ton 환산 및 업데이트 함수
+        const updateMetalInTon = (id, koreanKey, label) => {
+            if (rates[koreanKey]) {
+                // 온스당 가격 * OUNCE_TO_TON = 톤당 가격
+                const pricePerTon = rates[koreanKey] * OUNCE_TO_TON;
+                updateCard(id, '$' + pricePerTon.toLocaleString(undefined, {maximumFractionDigits: 2}), label);
             }
-        });
+        };
+
+        // 요청하신 주요 금속 4종 업데이트
+        updateMetalInTon('aluminum', '알루미늄', 'LME Aluminum (USD/ton)');
+        updateMetalInTon('copper', '구리', 'LME Copper (USD/ton)');
+        updateMetalInTon('lead', '납', 'LME Lead (USD/ton)');
+        updateMetalInTon('iron', '철', 'Iron Ore (USD/ton)');
 
         return true;
     } catch (error) {
@@ -94,7 +84,6 @@ function updateCard(id, value, footer) {
     const valueEl = card.querySelector('.card-value');
     const footerEl = card.querySelector('.card-footer');
     
-    // 값이 변경될 때만 효과를 주기 위해 체크
     if (valueEl.textContent !== value && valueEl.textContent !== '---') {
         valueEl.style.color = '#e53e3e';
         setTimeout(() => valueEl.style.color = '#2d3748', 1000);
@@ -106,7 +95,7 @@ function updateCard(id, value, footer) {
 
 function updateTimestamp() {
     const now = new Date();
-    lastUpdatedEl.innerHTML = `실시간 USD/ton 반영 중: ${now.toLocaleTimeString()} <i class="fa-solid fa-sync fa-spin"></i>`;
+    lastUpdatedEl.innerHTML = `실시간 데이터 반영 중 (USD/ton): ${now.toLocaleTimeString()} <i class="fa-solid fa-sync fa-spin"></i>`;
 }
 
 // ------------------------------------------------------------------
