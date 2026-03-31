@@ -3,7 +3,7 @@
 // ------------------------------------------------------------------
 const lastUpdatedEl = document.getElementById('last-updated');
 
-// 온스(Ounce)를 톤(Metric Ton)으로 변환하는 상수
+// 온스(Ounce)를 톤(Metric Ton)으로 변환하는 상수 (1 t = 32,150.7466 oz)
 const OUNCE_TO_TON = 32150.7466; 
 
 // ------------------------------------------------------------------
@@ -29,43 +29,43 @@ async function fetchExchangeRates() {
 }
 
 // ------------------------------------------------------------------
-// COMMODITY DATA (새로운 한글 API 구조 적용 + USD/ton 환산)
+// COMMODITY DATA (온스 & 톤 가격 동시 표기)
 // ------------------------------------------------------------------
 async function fetchCommodities() {
     try {
         // [제공해주신 새로운 API 구조 샘플]
         const result = {
             "기준": "USD",
-            "날짜": "2026-03-31",
             "요금": {
                 "알루미늄": 0.1096,
                 "구리": 0.3467,
-                "납": 0.0655, // (가정치)
-                "철": 0.0035,  // (가정치)
-                "팔라디움": 1430.0000,
-                "플래티넘": 1910.0000,
-                "로듐": 10400.0000,
+                "납": 0.0655,
+                "철": 0.0035,
                 "아연": 0.0983
-            },
-            "단위": "금속은 온스당"
+            }
         };
 
         const rates = result.요금;
 
-        // 금속별 USD/ton 환산 및 업데이트 함수
-        const updateMetalInTon = (id, koreanKey, label) => {
+        // 금속별 온스($/oz) 및 톤($/ton) 가격 업데이트 함수
+        const updateMetalPrices = (id, koreanKey, label) => {
             if (rates[koreanKey]) {
-                // 온스당 가격 * OUNCE_TO_TON = 톤당 가격
-                const pricePerTon = rates[koreanKey] * OUNCE_TO_TON;
-                updateCard(id, '$' + pricePerTon.toLocaleString(undefined, {maximumFractionDigits: 2}), label);
+                const pricePerOz = rates[koreanKey];
+                const pricePerTon = pricePerOz * OUNCE_TO_TON;
+                
+                // 메인 값: $/ton, 하단 정보: $/oz 포함
+                updateCard(
+                    id, 
+                    '$' + pricePerTon.toLocaleString(undefined, {maximumFractionDigits: 2}), 
+                    `${label} | $${pricePerOz.toFixed(4)}/oz`
+                );
             }
         };
 
-        // 요청하신 주요 금속 4종 업데이트
-        updateMetalInTon('aluminum', '알루미늄', 'LME Aluminum (USD/ton)');
-        updateMetalInTon('copper', '구리', 'LME Copper (USD/ton)');
-        updateMetalInTon('lead', '납', 'LME Lead (USD/ton)');
-        updateMetalInTon('iron', '철', 'Iron Ore (USD/ton)');
+        updateMetalPrices('aluminum', '알루미늄', 'Aluminum');
+        updateMetalPrices('copper', '구리', 'Copper');
+        updateMetalPrices('lead', '납', 'Lead');
+        updateMetalPrices('iron', '철', 'Iron Ore');
 
         return true;
     } catch (error) {
@@ -90,12 +90,12 @@ function updateCard(id, value, footer) {
     }
     
     valueEl.textContent = value;
-    footerEl.textContent = footer;
+    footerEl.innerHTML = footer; // HTML 태그 사용 가능하도록 수정
 }
 
 function updateTimestamp() {
     const now = new Date();
-    lastUpdatedEl.innerHTML = `실시간 데이터 반영 중 (USD/ton): ${now.toLocaleTimeString()} <i class="fa-solid fa-sync fa-spin"></i>`;
+    lastUpdatedEl.innerHTML = `실시간 데이터 반영 중: ${now.toLocaleTimeString()} <i class="fa-solid fa-sync fa-spin"></i>`;
 }
 
 // ------------------------------------------------------------------
