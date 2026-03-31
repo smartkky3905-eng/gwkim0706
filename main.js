@@ -4,7 +4,7 @@
 const lastUpdatedEl = document.getElementById('last-updated');
 
 // ------------------------------------------------------------------
-// EXCHANGE RATE DATA (Frankfurter API - 실시간/무료)
+// EXCHANGE RATE DATA (Frankfurter API)
 // ------------------------------------------------------------------
 async function fetchExchangeRates() {
     try {
@@ -21,42 +21,61 @@ async function fetchExchangeRates() {
         return true;
     } catch (error) {
         console.error('환율 데이터 로딩 실패:', error);
-        updateCardError('currency-grid');
         return false;
     }
 }
 
 // ------------------------------------------------------------------
-// COMMODITY DATA (제공해주신 API 구조 적용)
+// COMMODITY DATA (USD/ton 기준 추출 및 처리)
 // ------------------------------------------------------------------
 async function fetchCommodities() {
     try {
-        // 실제 API 호출 시 주소를 입력하세요 (현재는 제공해주신 구조로 처리)
-        // const response = await fetch('YOUR_METALS_API_URL');
+        // 실제 API 연동 시 아래 주석을 해제하고 URL을 입력하세요.
+        // const response = await fetch('YOUR_API_ENDPOINT');
         // const result = await response.json();
-        
-        // 제공해주신 API 응답 샘플 데이터 구조
+
+        // [제공해주신 API 구조 샘플]
         const result = { 
             "data": { 
                 "success": true, 
                 "rates": { 
-                    "USDLME-XCU": 8432.50, // 구리 (예시)
-                    "USDLME-LEAD": 2105.00, // 납 (예시)
-                    "USDLME-ALU": 2270.50, // 알루미늄 (예시)
-                    "USDIRON": 113.20,      // 철광석 (예시)
-                    "USDXAU": 4584.87,      // 금 (샘플에 있던 값)
-                    "USDXAG": 73.15         // 은 (샘플에 있던 값)
+                    "USD": 1,
+                    "LME-XCU": 0.0001186, // (예시) 1달러당 톤수
+                    "LME-LEAD": 0.0004750,
+                    "LME-ALU": 0.0004405,
+                    "IRON": 0.0088339,
+                    "USDLME-XCU": 8432.50, // (직접 가격) USD per Ton
+                    "USDLME-LEAD": 2105.00,
+                    "USDLME-ALU": 2270.50,
+                    "USDIRON": 113.20
                 } 
             } 
         };
 
         const rates = result.data.rates;
 
-        // 원자재 카드 업데이트 (제공된 구조에 맞춰 USD 가격 직접 추출)
-        updateCard('copper', '$' + (rates['USDLME-XCU'] || 8432.50).toLocaleString(), 'LME Copper Grade A');
-        updateCard('lead', '$' + (rates['USDLME-LEAD'] || 2105.00).toLocaleString(), 'LME Lead Standard');
-        updateCard('aluminum', '$' + (rates['USDLME-ALU'] || 2270.50).toLocaleString(), 'LME Aluminum HG');
-        updateCard('iron', '$' + (rates['USDIRON'] || 113.20).toLocaleString(), 'Iron Ore 62% Fe');
+        // USD/ton 가격 추출 함수
+        // 직접 가격(USDXXX)이 있으면 사용하고, 없으면 역수(1/XXX)로 계산합니다.
+        const getPricePerTon = (symbol) => {
+            const directKey = 'USD' + symbol;
+            if (rates[directKey]) return rates[directKey]; // 직접 가격 사용
+            if (rates[symbol]) return 1 / rates[symbol];  // 역수 계산 (1 USD / 톤당 USD)
+            return null;
+        };
+
+        const commodities = [
+            { id: 'copper', symbol: 'LME-XCU', label: 'LME Copper Grade A' },
+            { id: 'lead', symbol: 'LME-LEAD', label: 'LME Lead Standard' },
+            { id: 'aluminum', symbol: 'LME-ALU', label: 'LME Aluminum HG' },
+            { id: 'iron', symbol: 'IRON', label: 'Iron Ore 62% Fe' }
+        ];
+
+        commodities.forEach(item => {
+            const price = getPricePerTon(item.symbol);
+            if (price) {
+                updateCard(item.id, '$' + price.toLocaleString(undefined, {maximumFractionDigits: 2}), item.label);
+            }
+        });
 
         return true;
     } catch (error) {
@@ -66,7 +85,7 @@ async function fetchCommodities() {
 }
 
 // ------------------------------------------------------------------
-// UTILS
+// UI UTILS
 // ------------------------------------------------------------------
 function updateCard(id, value, footer) {
     const card = document.getElementById(id);
@@ -75,6 +94,7 @@ function updateCard(id, value, footer) {
     const valueEl = card.querySelector('.card-value');
     const footerEl = card.querySelector('.card-footer');
     
+    // 값이 변경될 때만 효과를 주기 위해 체크
     if (valueEl.textContent !== value && valueEl.textContent !== '---') {
         valueEl.style.color = '#e53e3e';
         setTimeout(() => valueEl.style.color = '#2d3748', 1000);
@@ -84,31 +104,20 @@ function updateCard(id, value, footer) {
     footerEl.textContent = footer;
 }
 
-function updateCardError(gridId) {
-    const grid = document.getElementById(gridId);
-    if (grid) {
-        const cards = grid.querySelectorAll('.card-value');
-        cards.forEach(c => c.textContent = '불러오기 실패');
-    }
-}
-
 function updateTimestamp() {
     const now = new Date();
-    lastUpdatedEl.innerHTML = `실시간 데이터 반영 중: ${now.toLocaleTimeString()} <i class="fa-solid fa-sync fa-spin" style="font-size: 0.8em; margin-left: 5px;"></i>`;
+    lastUpdatedEl.innerHTML = `실시간 USD/ton 반영 중: ${now.toLocaleTimeString()} <i class="fa-solid fa-sync fa-spin"></i>`;
 }
 
 // ------------------------------------------------------------------
-// INITIALIZE & AUTO-REFRESH
+// INITIALIZE
 // ------------------------------------------------------------------
 async function init() {
     const results = await Promise.all([
         fetchExchangeRates(),
         fetchCommodities()
     ]);
-    
-    if (results.every(r => r === true)) {
-        updateTimestamp();
-    }
+    if (results.every(r => r === true)) updateTimestamp();
 }
 
 setInterval(init, 60000);
